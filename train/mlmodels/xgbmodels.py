@@ -13,8 +13,8 @@ class ZCXGBoost(BasicMLModel):
     
     def fit(self, X, y):
         dtrain = xgb.DMatrix(X, label=y, feature_names=self.features)
-        self.model.fit(dtrain)
+        self.fitted_model = self.model.fit(dtrain)
     
     def predict(self, X):
         dtest = xgb.DMatrix(X, feature_names=self.features)
-        return self.model.predict(dtest)
+        return self.model.fitted_model(dtest)

@@ -10,33 +10,87 @@ class ZCLinearRegression(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = LinearRegression(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
 
 
 class ZCLassoRegression(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = Lasso(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
 
 
-class ZCDesitionTreeRegressor(BasicModel):
+class ZCDecisionTreeRegressor(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = DecisionTreeRegressor(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
 
 
 class ZCRandomForestRegressor(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = RandomForestRegressor(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
     
 
 class ZCAdaBoostRegressor(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = AdaBoostRegressor(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
 
 
 class ZCGradientBoostingRegressor(BasicModel):
     
     def __init__(self, *args, **kwargs):
         self.model = GradientBoostingRegressor(*args, **kwargs)
+        self.fitted_model = None
+
+    def fit(self, X, y):
+        # print("fit")
+        self.fitted_model = self.model.fit(X, y)
+
+    def predict(self, X):
+        # print("predict")
+        return self.fitted_model.predict(X)
