@@ -1,17 +1,18 @@
 services:
 
   minio:
-    image: minio/minio
+    image: minio/minio@sha256:d051d800a3025588f37f69f132bb5ef718547a9a4ee95ddee44e04ad952a0a96
     container_name: minio
+    command: server /data --console-address ':9001' --address ':9000'
     ports:
       - "9000:9000"
+      - "9001:9001"
     environment:
       MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
       MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+    restart: always
     volumes:
       - minio_data:/data
-    networks:
-      - train
 
 
   minio-bucket-creator:
@@ -21,8 +22,6 @@ services:
     command: -c "mc config host add minio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY && mc mb minio/mlflow-artifacts"
     depends_on:
       - minio
-    networks:
-      - train
 
 
   postgres:
@@ -30,29 +29,33 @@ services:
     environment:
       - "POSTGRES_USER=mlflow"
       - "POSTGRES_PASSWORD=mlflow_pass"
+      - "POSTGRES_DB=mlflow"
     volumes: 
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - train
 
 
   mlflow:
     build:
-      context: .
+      context: ../mlflow
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
-      - "BACKEND_URI=postgresql://mlflow:mlflow_pass@postgres:5432"
+      - "BACKEND_URI=postgresql://mlflow:mlflow_pass@postgres:5432/mlflow"
       - "MLFLOW_S3_ENDPOINT_URL=http://minio:9000"
+      - "MLFLOW_S3_IGNORE_TLS=true"
+      - "MLFLOW_BUCKET_NAME=mlflow-artifacts"
+      - "POSTGRES_DBNAME=mlflow"
+      - "POSTGRES_USER=mlflow"
+      - "POSTGRES_PASSWORD=mlflow_pass"
       - "ARTIFACT_ROOT=s3://mlflow-artifacts/"
-      - "AWS_ACCESS_KEY_ID=mlflow_access_key"
-      - "AWS_SECRET_ACCESS_KEY=mlflow_secret_key"
+      - "AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY"
+      - "AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY"
+      - "AWS_ENDPOINT_URL=http://minio:9000"
+
     depends_on:
       - postgres
       - minio
-    networks:
-      - train
 
 
   train:
@@ -61,16 +64,23 @@ services:
       dockerfile: Dockerfile
     image: train
     container_name: train
-    command: python train.py
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
       - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
       - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      - JUPYTER_TOKEN=$JUPYTER_TOKEN
+      - MLFLOW_TRACKING_URI="postgresql://mlflow:mlflow_pass@postgres:5432"
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - MLFLOW_S3_IGNORE_TLS=true
+      - MLFLOW_BUCKET_NAME=mlflow-artifacts
+      - MLFLOW_SERVER=http://mlflow:5000
     depends_on:
-      - db
-    networks:
-      - train
+      - mlflow
 
 volumes:
   postgres_data:
