@@ -54,3 +54,32 @@ To address the problem of predicting house prices effectively, we will follow a 
 - **Containerization**: Use Docker to containerize the Flask application for easy deployment.  
 
 ![archiecture](drawio/archecture.drawio.png)
+
+
+## 3. Exploratory Data Analysis (EDA)
+
+Click to go to [notebook](notebooks/eda.ipynb)
+
+This notebook performs an Exploratory Data Analysis (EDA) on the House Prices - Advanced Regression Techniques dataset. The notebook provides a comprehensive initial analysis of the dataset, cleaning and transforming the data to prepare it for further modeling.
+
+The analysis includes:
+
+1. **Introduction**: Overview of the dataset's structure and objectives of the EDA.
+2. **Imports**: Importing necessary libraries: `numpy`, `pandas`, `matplotlib.pyplot`, and `seaborn`.
+3. **Data Loading**: Loading the training dataset from a CSV file.
+4. **Column Analysis**:
+   - Renaming columns to snake_case.
+   - Displaying the first five rows of the dataset.
+   - Providing a summary of the data columns.
+5. **Null Values Analysis**: Identifying columns with null values and calculating the percentage of null values.
+6. **Data Cleaning**: Dropping less useful columns and rows with missing values.
+7. **Target Column Analysis**:
+   - Visualizing the distribution of the target variable (`sale_price`).
+   - Transforming `sale_price` using `np.log1p` to normalize the distribution.
+8. **Categorical and Numerical Data**:
+   - Identifying categorical and numerical columns.
+   - Displaying the count of each categorical column.
+9. **Visualizing Categorical Columns**:
+   - Generating bar plots for each categorical column to visualize the distribution of categories.
+10. **Feature importance Analysis**: Apply a DecisionTreeRegressor to identify most relevant variables. 
+
