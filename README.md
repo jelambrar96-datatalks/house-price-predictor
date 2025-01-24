@@ -14,3 +14,43 @@ This complexity is precisely why machine learning becomes invaluable. Machine le
 
 This is where machine learning provides an excellent solution. **Machine learning models** are designed to analyze vast datasets, uncover hidden patterns, and identify relationships between variables. By training a model with historical data on house prices and their associated features, we can build a system capable of making accurate predictions for new houses.
 
+Here’s a structured solution to the house price prediction problem:  
+
+
+### 2.1. **Proposed Solution for Predicting House Prices**  
+
+To address the problem of predicting house prices effectively, we will follow a systematic approach that incorporates data exploration, model development, tracking, and deployment.  
+
+
+#### **2.1.1. Exploratory Data Analysis (EDA)**  
+**Objective**: Understand the dataset and uncover meaningful patterns and relationships.  
+- **Data Cleaning**: Handle missing values, remove duplicates, and standardize data formats.  
+- **Feature Understanding**: Analyze features such as location, size, number of bedrooms, age, and market conditions.  
+- **Univariate Analysis**: Explore individual features to identify distributions, outliers, and trends.  
+  - Example: Use histograms for price distribution or bar plots for categorical variables (e.g., number of bedrooms).  
+- **Multivariate Analysis**: Analyze the relationships between features.  
+  - Example: Correlation matrices and scatter plots to explore how size or location impacts price.  
+- **Feature Engineering**:  
+  - Create new features, such as price per square foot or proximity to city center.  
+  - Encode categorical features (e.g., neighborhoods) using one-hot encoding or target encoding.  
+
+#### **2.1.2. Train Multiple Machine Learning Models**  
+**Objective**: Build and evaluate machine learning models to identify the best-performing algorithm.  
+- **Data Splitting**: Divide the dataset into training, validation, and testing sets. 
+- **Multiple Models**: Train and compare the performance of multiple models:   
+- **Model Evaluation**: Use metric Mean Squared Error (MSE) to evaluate performance.  
+- **Perform hyperparameter tuning** using techniques like Grid Search or Random Search with cross-validation to improve accuracy.  
+
+#### **2.1.3. Model Registry with MLflow**  
+**Objective**: Track experiments and manage models efficiently.  
+- **Track Experiments**: Use MLflow to log training parameters, metrics, and artifacts for each model. Log hyperparameters, training/validation scores, and model artifacts (e.g., pickled model files).  
+- **Model Registry**: Register the best-performing model in the MLflow Model Registry for easy retrieval. Assign stages such as *Staging*, *Production*, and *Archived* to manage model lifecycles.  
+
+#### **2.1.4. Deploy the Model with Flask**  
+**Objective**: Make the model available for real-world use via a REST API.This ensures the model is accessible to end-users via a lightweight and scalable API.  
+- **Build API with Flask**:  
+  - Create endpoints such as `/predict` to accept house feature data (e.g., size, location, age) as input.  
+  - Load the best model from the MLflow registry and use it to generate predictions.  
+- **Containerization**: Use Docker to containerize the Flask application for easy deployment.  
+
+![archiecture](drawio/archecture.drawio.png)
