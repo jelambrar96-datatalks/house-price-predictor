@@ -83,3 +83,59 @@ The analysis includes:
    - Generating bar plots for each categorical column to visualize the distribution of categories.
 10. **Feature importance Analysis**: Apply a DecisionTreeRegressor to identify most relevant variables. 
 
+## 4. Training models
+
+The training **Jupyter notebook** performs the following steps:
+
+1. **Setup and Imports**:
+   - Imports necessary libraries such as `numpy`, `pandas`, `sklearn`, and others.
+   - Sets environment variables for accessing `MLFLOW` and `MINIO`.
+   
+2. **Data Loading and Preparation**:
+   - Downloads the training dataset.
+   - Reads the dataset into a DataFrame and preprocesses column names.
+   - Drops columns with significant null values and rows with any null values.
+   - Transforms the target column (`sale_price`) using `np.log1p`.
+   - Splits the dataset into training and testing sets.
+   - Scales numerical features and vectorizes categorical features.
+
+3. **Model Training and Hyperparameter Search**:
+   - Utilizes different models from `sklearn` with hyperparameter tuning using `GridSearchCV` or `RandomizedSearchCV`.
+
+The following `sklearn` models are used along with their hyperparameters:
+
+1. **Linear Regression**:
+   - Hyperparameters: `fit_intercept` (True, False)
+   - Search Method: `GridSearchCV`
+
+2. **Lasso Regression**:
+   - Hyperparameters: `alpha` (0.001, 0.01, 0.1, 1, 10, 100)
+   - Search Method: `GridSearchCV`
+
+3. **Decision Tree Regressor**:
+   - Hyperparameters: `criterion`, `max_depth`, `min_samples_split`, `min_samples_leaf`, `max_features`, `random_state`
+   - Search Method: `RandomizedSearchCV`
+
+4. **Random Forest Regressor**:
+   - Hyperparameters: `n_estimators`, `max_depth`, `min_samples_split`, `min_samples_leaf`, `max_features`, `bootstrap`, `oob_score`, `criterion`, `ccp_alpha`, `random_state`
+   - Search Method: `RandomizedSearchCV`
+
+5. **AdaBoost Regressor**:
+   - Hyperparameters: `learning_rate`, `n_estimators`, `loss`, `estimator`, `random_state`
+   - Search Method: `RandomizedSearchCV`
+
+6. **Gradient Boosting Regressor**:
+   - Hyperparameters: `learning_rate`, `n_estimators`, `max_depth`, `min_samples_split`, `min_samples_leaf`, `max_features`, `subsample`, `loss`, `alpha`, `random_state`
+   - Search Method: `RandomizedSearchCV`
+
+7. **MLP Regressor** (Neural Network):
+   - Hyperparameters: `hidden_layer_sizes`, `activation`, `solver`, `learning_rate_init`, `batch_size`, `learning_rate`, `power_t`, `max_iter`, `early_stopping`, `validation_fraction`
+   - Search Method: `RandomizedSearchCV`
+
+Each model's best estimator, parameters, and score are determined using the respective search method. You can view the full notebook [here](train/train_pipelines_sklearn.ipynb).
+
+### 4.1. Separated python script
+
+All training process can be execute using [main.py](train/main.py) file. 
+
+
