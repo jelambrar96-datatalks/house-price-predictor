@@ -13,3 +13,5 @@ class BasicModel:
         # print("predict")
         return self.fitted_model.predict(X)
 
+    def get_params(self):
+        return self.fitted_model.get_params()

@@ -20,6 +20,9 @@ class ZCLinearRegression(BasicModel):
         # print("predict")
         return self.fitted_model.predict(X)
 
+    def get_params(self):
+        return self.fitted_model.get_params()
+
 
 class ZCLassoRegression(BasicModel):
     
@@ -34,6 +37,9 @@ class ZCLassoRegression(BasicModel):
     def predict(self, X):
         # print("predict")
         return self.fitted_model.predict(X)
+
+    def get_params(self):
+        return self.fitted_model.get_params()
 
 
 class ZCDecisionTreeRegressor(BasicModel):
@@ -50,6 +56,9 @@ class ZCDecisionTreeRegressor(BasicModel):
         # print("predict")
         return self.fitted_model.predict(X)
 
+    def get_params(self):
+        return self.fitted_model.get_params()
+
 
 class ZCRandomForestRegressor(BasicModel):
     
@@ -64,7 +73,10 @@ class ZCRandomForestRegressor(BasicModel):
     def predict(self, X):
         # print("predict")
         return self.fitted_model.predict(X)
-    
+
+    def get_params(self):
+        return self.fitted_model.get_params()    
+
 
 class ZCAdaBoostRegressor(BasicModel):
     
@@ -80,6 +92,9 @@ class ZCAdaBoostRegressor(BasicModel):
         # print("predict")
         return self.fitted_model.predict(X)
 
+    def get_params(self):
+        return self.fitted_model.get_params()
+
 
 class ZCGradientBoostingRegressor(BasicModel):
     
@@ -94,3 +109,6 @@ class ZCGradientBoostingRegressor(BasicModel):
     def predict(self, X):
         # print("predict")
         return self.fitted_model.predict(X)
+
+    def get_params(self):
+        return self.fitted_model.get_params()
