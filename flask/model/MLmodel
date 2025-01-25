@@ -1,0 +1,76 @@
+artifact_path: model
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.16
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.0
+mlflow_version: 2.19.0
+model_size_bytes: 10696
+model_uuid: d8973e1d6b4b490684b22f972866840c
+run_id: 420ffd960e5e4127b9dbdf34f921af61
+signature:
+  inputs: '[{"type": "long", "name": "ms_sub_class", "required": true}, {"type": "string",
+    "name": "ms_zoning", "required": true}, {"type": "long", "name": "lot_area", "required":
+    true}, {"type": "string", "name": "street", "required": true}, {"type": "string",
+    "name": "lot_shape", "required": true}, {"type": "string", "name": "land_contour",
+    "required": true}, {"type": "string", "name": "utilities", "required": true},
+    {"type": "string", "name": "lot_config", "required": true}, {"type": "string",
+    "name": "land_slope", "required": true}, {"type": "string", "name": "neighborhood",
+    "required": true}, {"type": "string", "name": "condition1", "required": true},
+    {"type": "string", "name": "condition2", "required": true}, {"type": "string",
+    "name": "bldg_type", "required": true}, {"type": "string", "name": "house_style",
+    "required": true}, {"type": "long", "name": "overall_qual", "required": true},
+    {"type": "long", "name": "overall_cond", "required": true}, {"type": "long", "name":
+    "year_built", "required": true}, {"type": "long", "name": "year_remod_add", "required":
+    true}, {"type": "string", "name": "roof_style", "required": true}, {"type": "string",
+    "name": "roof_matl", "required": true}, {"type": "string", "name": "exterior1st",
+    "required": true}, {"type": "string", "name": "exterior2nd", "required": true},
+    {"type": "double", "name": "mas_vnr_area", "required": true}, {"type": "string",
+    "name": "exter_qual", "required": true}, {"type": "string", "name": "exter_cond",
+    "required": true}, {"type": "string", "name": "foundation", "required": true},
+    {"type": "string", "name": "bsmt_qual", "required": true}, {"type": "string",
+    "name": "bsmt_cond", "required": true}, {"type": "string", "name": "bsmt_exposure",
+    "required": true}, {"type": "string", "name": "bsmt_fin_type1", "required": true},
+    {"type": "long", "name": "bsmt_fin_sf1", "required": true}, {"type": "string",
+    "name": "bsmt_fin_type2", "required": true}, {"type": "long", "name": "bsmt_fin_sf2",
+    "required": true}, {"type": "long", "name": "bsmt_unf_sf", "required": true},
+    {"type": "long", "name": "total_bsmt_sf", "required": true}, {"type": "string",
+    "name": "heating", "required": true}, {"type": "string", "name": "heating_qc",
+    "required": true}, {"type": "string", "name": "central_air", "required": true},
+    {"type": "string", "name": "electrical", "required": true}, {"type": "long", "name":
+    "1st_flr_sf", "required": true}, {"type": "long", "name": "2nd_flr_sf", "required":
+    true}, {"type": "long", "name": "low_qual_fin_sf", "required": true}, {"type":
+    "long", "name": "gr_liv_area", "required": true}, {"type": "long", "name": "bsmt_full_bath",
+    "required": true}, {"type": "long", "name": "bsmt_half_bath", "required": true},
+    {"type": "long", "name": "full_bath", "required": true}, {"type": "long", "name":
+    "half_bath", "required": true}, {"type": "long", "name": "bedroom_abv_gr", "required":
+    true}, {"type": "long", "name": "kitchen_abv_gr", "required": true}, {"type":
+    "string", "name": "kitchen_qual", "required": true}, {"type": "long", "name":
+    "tot_rms_abv_grd", "required": true}, {"type": "string", "name": "functional",
+    "required": true}, {"type": "long", "name": "fireplaces", "required": true}, {"type":
+    "string", "name": "garage_type", "required": true}, {"type": "double", "name":
+    "garage_yr_blt", "required": true}, {"type": "string", "name": "garage_finish",
+    "required": true}, {"type": "long", "name": "garage_cars", "required": true},
+    {"type": "long", "name": "garage_area", "required": true}, {"type": "string",
+    "name": "garage_qual", "required": true}, {"type": "string", "name": "garage_cond",
+    "required": true}, {"type": "string", "name": "paved_drive", "required": true},
+    {"type": "long", "name": "wood_deck_sf", "required": true}, {"type": "long", "name":
+    "open_porch_sf", "required": true}, {"type": "long", "name": "enclosed_porch",
+    "required": true}, {"type": "long", "name": "3_ssn_porch", "required": true},
+    {"type": "long", "name": "screen_porch", "required": true}, {"type": "long", "name":
+    "pool_area", "required": true}, {"type": "long", "name": "misc_val", "required":
+    true}, {"type": "long", "name": "mo_sold", "required": true}, {"type": "long",
+    "name": "yr_sold", "required": true}, {"type": "string", "name": "sale_type",
+    "required": true}, {"type": "string", "name": "sale_condition", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+  params: null
+utc_time_created: '2025-01-21 16:27:31.981371'
