@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+mlflow = {extras = ["extras"], version = "*"}
+psycopg2-binary = "*"
+boto3 = "*"
+numpy = "*"
+scipy = "*"
+pandas = "*"
+scikit-learn = "*"
+requests = "*"
+xgboost = "*"
+minio = "*"
+jupyter = "*"
+python-dotenv = "*"
+tqdm = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
