@@ -1,0 +1,4 @@
+mlflow==2.12.1
+mlflow[extras]
+psycopg2-binary
+boto3
