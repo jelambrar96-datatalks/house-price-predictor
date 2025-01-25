@@ -17,6 +17,7 @@ minio = "*"
 jupyter = "*"
 python-dotenv = "*"
 tqdm = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 
