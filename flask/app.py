@@ -12,6 +12,7 @@ import pickle
 import tempfile
 
 import boto3
+import numpy as np
 import pandas as pd
 import sklearn  # pylint: disable=unused-import
 
@@ -48,16 +49,41 @@ MLFLOW_EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "mlzoomcamp");
 
 # -----------------------------------------------------------------------------
 
+BASE_JSON = {
+    "ms_sub_class": 20.0, "ms_zoning": "RL", "lot_area": 9600.0, "street": "Pave", "lot_shape": "Reg",
+    "land_contour": "Lvl", "utilities": "AllPub", "lot_config": "Inside", "land_slope": "Gtl",
+    "neighborhood": "NAmes", "condition1": "Norm", "condition2": "Norm", "bldg_type": "1Fam",
+    "house_style": "1Story", "overall_qual": 5.0, "overall_cond": 5.0, "year_built": 2006.0,
+    "year_remod_add": 1950.0, "roof_style": "Gable", "roof_matl": "CompShg", "exterior1st": "VinylSd",
+    "exterior2nd": "VinylSd", "mas_vnr_area": 0.0, "exter_qual": "TA", "exter_cond": "TA",
+    "foundation": "PConc", "bsmt_qual": "Gd", "bsmt_cond": "TA", "bsmt_exposure": "No",
+    "bsmt_fin_type1": "GLQ", "bsmt_fin_sf1": 0.0, "bsmt_fin_type2": "Unf", "bsmt_fin_sf2": 0.0,
+    "bsmt_unf_sf": 0.0, "total_bsmt_sf": 864.0, "heating": "GasA", "heating_qc": "Ex",
+    "central_air": "Y", "electrical": "SBrkr", "1st_flr_sf": 864.0, "2nd_flr_sf": 0.0,
+    "low_qual_fin_sf": 0.0, "gr_liv_area": 864.0, "bsmt_full_bath": 0.0, "bsmt_half_bath": 0.0,
+    "full_bath": 2.0, "half_bath": 0.0, "bedroom_abv_gr": 3.0, "kitchen_abv_gr": 1.0,
+    "kitchen_qual": "TA", "tot_rms_abv_grd": 6.0, "functional": "Typ", "fireplaces": 1.0,
+    "garage_type": "Attchd", "garage_yr_blt": 2005.0, "garage_finish": "Unf", "garage_cars": 2.0,
+    "garage_area": 440.0, "garage_qual": "TA", "garage_cond": "TA", "paved_drive": "Y",
+    "wood_deck_sf": 0.0, "open_porch_sf": 0.0, "enclosed_porch": 0.0, "3_ssn_porch": 0.0,
+    "screen_porch": 0.0, "pool_area": 0.0, "misc_val": 0.0, "mo_sold": 6.0, "yr_sold": 2009.0,
+    "sale_type": "WD", "sale_condition": "Normal"
+}
+
+def prepare_features(data):
+    model_data = {key: data.get(key, val) for key, val in BASE_JSON.items()}
+    return [ model_data ]
 
 # -----------------------------------------------------------------------------
 #
 # -----------------------------------------------------------------------------
 
 # Load the MLflow experiment
-mlflow.set_tracking_uri(MLFLOW_SERVER)
+if not MLFLOW_SERVER is None:
+    mlflow.set_tracking_uri(MLFLOW_SERVER)
 
-experiment = mlflow.search_experiments(filter_string=f"name='{MLFLOW_EXPERIMENT_NAME}'")[0]
-mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
+    experiment = mlflow.search_experiments(filter_string=f"name='{MLFLOW_EXPERIMENT_NAME}'")[0]
+    mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
 
 # -----------------------------------------------------------------------------
 
@@ -95,6 +121,8 @@ class ModelLoader:
         self._model = None
     
     def load_model(self):
+        if not MLFLOW_SERVER is None:
+            return False
         runs_df = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
         if len(runs_df) == 0:
             return False
@@ -114,7 +142,7 @@ class ModelLoader:
         return not self._model is None
 
     def predict(self, X):
-        return self._model.predict(X)
+        return np.exp(self._model.predict(X)).tolist()[0]
 
 
 
