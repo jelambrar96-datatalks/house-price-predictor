@@ -16,8 +16,8 @@ RUN pipenv install --system --deploy
 
 COPY . .
 
-EXPOSE 8888
+EXPOSE 8000
 
 # CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", \
 #     "--allow-root", "--IdentityProvider.token=$JUPYTER_TOKEN"]
-CMD ["/bin/bash", "run.sh"]
+CMD ["gunicorn", "--bind=0.0.0.0:8000", "app:app"]
