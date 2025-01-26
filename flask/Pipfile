@@ -16,6 +16,7 @@ minio = "*"
 xgboost = "*"
 python-dotenv = "*"
 requests = "*"
+gunicorn = "*"
 
 [dev-packages]
 

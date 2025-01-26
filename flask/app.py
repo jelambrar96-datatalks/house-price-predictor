@@ -17,7 +17,7 @@ import pandas as pd
 import sklearn  # pylint: disable=unused-import
 
 import mlflow  # pylint: disable=unused-import
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 from mlflow.tracking.artifact_utils import _download_artifact_from_uri
 from mlflow.utils.model_utils import (
@@ -152,6 +152,56 @@ model_loader.load_model_from_file("model/model.pkl")
 # Instantiate the Flask app
 app = Flask(__name__)
 
+dropdown_options = {
+    'ms_zoning': ['RL', 'RM', 'C (all)', 'FV', 'RH'],
+    'street': ['Pave', 'Grvl'],
+    'lot_shape': ['Reg', 'IR1', 'IR2', 'IR3'],
+    'land_contour': ['Lvl', 'Bnk', 'Low', 'HLS'],
+    'utilities': ['AllPub', 'NoSeWa'],
+    'lot_config': ['Inside', 'FR2', 'Corner', 'CulDSac', 'FR3'],
+    'land_slope': ['Gtl', 'Mod', 'Sev'],
+    'neighborhood': ['CollgCr', 'Veenker', 'Crawfor', 'NoRidge', 'Mitchel', 'Somerst', 'NWAmes', 'OldTown',
+                     'BrkSide', 'Sawyer', 'NridgHt', 'NAmes', 'SawyerW', 'IDOTRR', 'MeadowV', 'Edwards', 'Timber',
+                     'Gilbert', 'StoneBr', 'ClearCr', 'NPkVill', 'Blmngtn', 'BrDale', 'SWISU', 'Blueste'],
+    'condition1': ['Norm', 'Feedr', 'PosN', 'Artery', 'RRAe', 'RRNn', 'RRAn', 'PosA', 'RRNe'],
+    'condition2': ['Norm', 'Artery', 'RRNn', 'Feedr', 'PosN', 'PosA', 'RRAn', 'RRAe'],
+    'bldg_type': ['1Fam', '2fmCon', 'Duplex', 'TwnhsE', 'Twnhs'],
+    'house_style': ['2Story', '1Story', '1.5Fin', '1.5Unf', 'SFoyer', 'SLvl', '2.5Unf', '2.5Fin'],
+    'roof_style': ['Gable', 'Hip', 'Gambrel', 'Mansard', 'Flat', 'Shed'],
+    'roof_matl': ['CompShg', 'WdShngl', 'Metal', 'WdShake', 'Membran', 'Tar&Grv', 'Roll', 'ClyTile'],
+    'exterior1st': ['VinylSd', 'MetalSd', 'Wd Sdng', 'HdBoard', 'BrkFace', 'WdShing', 'CemntBd', 'Plywood',
+                    'AsbShng', 'Stucco', 'BrkComm', 'AsphShn', 'Stone', 'ImStucc', 'CBlock'],
+    'exterior2nd': ['VinylSd', 'MetalSd', 'Wd Shng', 'HdBoard', 'Plywood', 'Wd Sdng', 'CmentBd', 'BrkFace', 'Stucco',
+                    'AsbShng', 'Brk Cmn', 'ImStucc', 'AsphShn', 'Stone', 'Other', 'CBlock'],
+    'exter_qual': ['Gd', 'TA', 'Ex', 'Fa'],
+    'exter_cond': ['TA', 'Gd', 'Fa', 'Po', 'Ex'],
+    'foundation': ['PConc', 'CBlock', 'BrkTil', 'Wood', 'Slab', 'Stone'],
+    'bsmt_qual': ['Gd', 'TA', 'Ex', None, 'Fa'],
+    'bsmt_cond': ['TA', 'Gd', None, 'Fa', 'Po'],
+    'bsmt_exposure': ['No', 'Gd', 'Mn', 'Av', None],
+    'bsmt_fin_type1': ['GLQ', 'ALQ', 'Unf', 'Rec', 'BLQ', None, 'LwQ'],
+    'bsmt_fin_type2': ['Unf', 'BLQ', None, 'ALQ', 'Rec', 'LwQ', 'GLQ'],
+    'heating': ['GasA', 'GasW', 'Grav', 'Wall', 'OthW', 'Floor'],
+    'heating_qc': ['Ex', 'Gd', 'TA', 'Fa', 'Po'],
+    'central_air': ['Y', 'N'],
+    'electrical': ['SBrkr', 'FuseF', 'FuseA', 'FuseP', 'Mix', None],
+    'kitchen_qual': ['Gd', 'TA', 'Ex', 'Fa'],
+    'functional': ['Typ', 'Min1', 'Maj1', 'Min2', 'Mod', 'Maj2', 'Sev'],
+    'garage_type': ['Attchd', 'Detchd', 'BuiltIn', 'CarPort', None, 'Basment', '2Types'],
+    'garage_finish': ['RFn', 'Unf', 'Fin', None],
+    'garage_qual': ['TA', 'Fa', 'Gd', None, 'Ex', 'Po'],
+    'garage_cond': ['TA', 'Fa', None, 'Gd', 'Po', 'Ex'],
+    'paved_drive': ['Y', 'N', 'P'],
+    'sale_type': ['WD', 'New', 'COD', 'ConLD', 'ConLI', 'CWD', 'ConLw', 'Con', 'Oth'],
+    'sale_condition': ['Normal', 'Abnorml', 'Partial', 'AdjLand', 'Alloca', 'Family']
+}
+
+# Numerical fields
+numerical_fields = [ 'ms_sub_class', 'lot_area', 'overall_qual', 'overall_cond', 'year_built', 'year_remod_add',
+    'mas_vnr_area', 'bsmt_fin_sf1', 'bsmt_fin_sf2', 'bsmt_unf_sf', 'total_bsmt_sf', '1st_flr_sf', '2nd_flr_sf',
+    'low_qual_fin_sf', 'gr_liv_area', 'bsmt_full_bath', 'bsmt_half_bath', 'full_bath', 'half_bath', 'bedroom_abv_gr',
+    'kitchen_abv_gr', 'tot_rms_abv_grd', 'fireplaces', 'garage_yr_blt', 'garage_cars', 'garage_area', 'wood_deck_sf',
+    'open_porch_sf', 'enclosed_porch', '3_ssn_porch', 'screen_porch', 'pool_area', 'misc_val', 'mo_sold', 'yr_sold']
 
 @app.route('/api/reload', methods=['POST'])
 def reload_endpoint():
@@ -184,7 +234,7 @@ def predict_endpoint():
     return jsonify({"result": result, "predictions": pred})
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     """
     Root endpoint to verify the service is running.
@@ -192,7 +242,19 @@ def index():
     Returns:
         str: Welcome message indicating the service is running.
     """
-    return "Zoomcamp application"
+    if request.method == 'POST':
+        # Handle form submission
+        form_data = request.form.to_dict()
+        print(form_data)
+        features = prepare_features(form_data)
+        pred = model_loader.predict(features)
+        result = "failed"
+        if pred is not None:
+            result = "success"
+        return jsonify({"result": result, "predictions": pred})
+
+    return render_template('index.html', dropdown_options=dropdown_options, numerical_fields=numerical_fields)
+
 
 
 if __name__ == "__main__":
