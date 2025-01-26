@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Property Form</h1>
+        <h1 class="mb-4 text-center">House Price Predictor</h1>
         <form action="/index" method="post">
             <!-- Dropdown menus -->
             <div class="row">
@@ -33,7 +33,7 @@
                 {% for field in numerical_fields %}
                     <div class="col-md-6 mb-3">
                         <label for="{{ field }}" class="form-label">{{ field }}</label>
-                        <input type="number" name="{{ field }}" id="{{ field }}" class="form-control">
+                        <input type="number" name="{{ field }}" id="{{ field }}" min="0" value="0" class="form-control">
                     </div>
                 {% endfor %}
             </div>
@@ -44,6 +44,7 @@
             </div>
         </form>
     </div>
+    <div class="container mt-5"></div>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script 

@@ -17,7 +17,7 @@ import pandas as pd
 import sklearn  # pylint: disable=unused-import
 
 import mlflow  # pylint: disable=unused-import
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 
 from mlflow.tracking.artifact_utils import _download_artifact_from_uri
 from mlflow.utils.model_utils import (
@@ -234,7 +234,12 @@ def predict_endpoint():
     return jsonify({"result": result, "predictions": pred})
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def home():
+    return redirect(url_for('index'))
+
+
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     """
     Root endpoint to verify the service is running.
@@ -243,15 +248,17 @@ def index():
         str: Welcome message indicating the service is running.
     """
     if request.method == 'POST':
+        # print("POST")
         # Handle form submission
-        form_data = request.form.to_dict()
-        print(form_data)
+        form_data = request.form
+        # print(form_data)
         features = prepare_features(form_data)
         pred = model_loader.predict(features)
         result = "failed"
         if pred is not None:
             result = "success"
-        return jsonify({"result": result, "predictions": pred})
+        # return jsonify({"result": result, "predictions": pred})
+        return render_template('result.html', prediction=f"${pred:,.2f}")
 
     return render_template('index.html', dropdown_options=dropdown_options, numerical_fields=numerical_fields)
 
