@@ -89,6 +89,7 @@ services:
       - MLFLOW_SERVER=http://mlflow:5000
       - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
       - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - MLFLOW_EXPERIMENT_NAME=mlzoomcamp
     command: >
       jupyter notebook 
       --ip=0.0.0.0 

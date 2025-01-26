@@ -129,7 +129,7 @@ class ModelLoader:
         try:
             best_run = runs_df.sort_values(by="metrics.rmse", ascending=True).iloc[0]
             model_path = best_run.artifact_uri
-            self._model = load_sklearn_model(model_uri=model_path, dst_path='model')
+            self._model = load_sklearn_model(model_uri=model_path, dst_path=TEMP_MODEL_DIR)
             return True
         except:
             return False
