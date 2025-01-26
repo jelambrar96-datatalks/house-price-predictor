@@ -92,7 +92,11 @@ def load_sklearn_model(model_uri, dst_path):
     local_model_path = _download_artifact_from_uri(artifact_uri=model_uri, output_path=dst_path)
     # print(local_model_path)
     # shutil.copytree(f'{local_model_path}/model', f'{local_model_path}/MLmodel')
-    local_model_path = os.path.join(local_model_path, 'MLmodel')
+    # temp_local_model_path = os.path.join(local_model_path, 'model')
+    if os.path.isdir(os.path.join(local_model_path, 'model')):
+        local_model_path = os.path.join(local_model_path, 'model')
+    elif os.path.isdir(os.path.join(local_model_path, 'MLmodel')):
+        local_model_path = os.path.join(local_model_path, 'MLmodel')
     flavor_conf = _get_flavor_configuration(
         model_path=local_model_path,
         flavor_name="sklearn"
@@ -121,18 +125,28 @@ class ModelLoader:
         self._model = None
     
     def load_model(self):
-        if not MLFLOW_SERVER is None:
+        if MLFLOW_SERVER is None:
+            print("MLFLOW_SERVER not defined")
             return False
+        mlflow.set_tracking_uri(MLFLOW_SERVER)
+        list_experiment = mlflow.search_experiments(filter_string=f"name='{MLFLOW_EXPERIMENT_NAME}'")
+        if len(list_experiment) == 0:
+            print("Not experiment found")
+            return False
+        experiment = list_experiment[0]
+        mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)
         runs_df = mlflow.search_runs(experiment_ids=[experiment.experiment_id])
         if len(runs_df) == 0:
+            print("Not runs found")
             return False
         try:
             best_run = runs_df.sort_values(by="metrics.rmse", ascending=True).iloc[0]
             model_path = best_run.artifact_uri
             self._model = load_sklearn_model(model_uri=model_path, dst_path=TEMP_MODEL_DIR)
-            return True
+            pass
         except:
             return False
+        return True
     
     def load_model_from_file(self, filename):
         with open(filename, 'rb') as f:

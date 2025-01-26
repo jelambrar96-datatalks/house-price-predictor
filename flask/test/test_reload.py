@@ -2,7 +2,8 @@ import os
 import sys
 import requests
 
-FLASK_SERVER = os.getenv("FLASK_SERVER", None)
+FLASK_SERVER = "http://127.0.0.1:8000"
+# FLASK_SERVER = "http://127.0.0.1:8001"
 
 if FLASK_SERVER is None:
     print("FLASK_SERVER not defined")
