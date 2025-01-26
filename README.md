@@ -59,6 +59,7 @@ To address the problem of predicting house prices effectively, we will follow a 
 
 ### 2.3. File Structure
 
+```bash
 $ tree . 
 .
 ├── dataset
@@ -117,7 +118,7 @@ $ tree .
     ├── train.ipynb
     ├── train_notebook.ipynb
     └── train_pipelines_sklearn.ipynb
-
+```
 
 ## 3. Exploratory Data Analysis (EDA)
 
