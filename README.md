@@ -238,14 +238,125 @@ The [app.py](flask/app.py) script sets up a Flask web application to serve machi
 
 In summary, this script sets up a Flask web application that serves predictions from a machine learning model. It supports interaction with MLflow for model management and uses MINIO for potential cloud storage integration. 
 
-## 6. Dependences Management
+## 6. Dependencies Management
 
+Managing dependencies is crucial for ensuring that your project runs smoothly in different environments. Below is the dependency management strategy for each module in the repository:
+
+### 6.1. Train Module
+The `train` module uses `Pipenv` for dependency management. The dependencies are specified in the `Pipfile` and `Pipfile.lock`.
+
+- **Pipfile**: Contains the project’s dependencies and their versions.
+- **Pipfile.lock**: Ensures reproducible builds by specifying exact versions of dependencies.
+
+To install the dependencies for the `train` module, run the following command:
+```bash
+pipenv install
+```
+
+### 6.2. MLflow Module
+The `mlflow` module uses a `requirements.txt` file to manage dependencies.
+
+- **requirements.txt**: Lists the dependencies required for the MLflow module.
+
+To install the dependencies for the `mlflow` module, run the following command:
+```bash
+pip install -r requirements.txt
+```
+
+### 6.3. Flask Module
+The `flask` module also uses `Pipenv` for dependency management. The dependencies are specified in the `Pipfile` and `Pipfile.lock`.
+
+To install the dependencies for the `flask` module, run the following command:
+```bash
+pipenv install
+```
+
+### 6.4. MinIO Client Module
+The `minio_client` module manages its dependencies through a `Dockerfile`.
+
+- **Dockerfile**: Specifies the necessary dependencies and environment setup for the MinIO client module.
+
+To build the Docker image for the `minio_client` module, run the following command:
+```bash
+docker build -t minio_client .
+```
+
+### 6.5. Notebooks for EDA
+The `notebooks` directory uses a `requirements.txt` file to manage dependencies for Exploratory Data Analysis (EDA).
+
+To install the dependencies for the EDA notebooks, run the following command:
+```bash
+pip install -r notebooks/requirements.txt
+```
 
 
 ## 7. Docker and containerization
 
+Containerization is essential for making sure that the application runs consistently across different environments. Below is the containerization strategy for each module in the repository:
+
+### 7.1. Train Module
+The `train` module is containerized using a `Dockerfile`. The `docker-compose.yaml` can be used to orchestrate multiple services if needed.
+
+- **Dockerfile**: Specifies the environment and dependencies for the training module.
+- **docker-compose.yaml**: Orchestrates the services for the training module.
+
+To build and run the Docker container for the `train` module, use the following commands:
+```bash
+docker build -t train_module .
+docker run train_module
+```
+
+### 7.2. MLflow Module
+The `mlflow` module is also containerized using a `Dockerfile`.
+
+- **Dockerfile**: Contains the necessary steps to set up the MLflow environment and install dependencies.
+
+To build and run the Docker container for the `mlflow` module, use the following commands:
+```bash
+docker build -t mlflow_module .
+docker run mlflow_module
+```
+
+### 7.3. Flask Module
+The `flask` module is containerized using a `Dockerfile`.
+
+- **Dockerfile**: Specifies the environment and dependencies for the Flask application.
+
+To build and run the Docker container for the `flask` module, use the following commands:
+```bash
+docker build -t flask_module .
+docker run -p 8000:8000 flask_module
+```
+
+### 7.4. MinIO Client Module
+The `minio_client` module uses a `Dockerfile` for containerization.
+
+- **Dockerfile**: Contains the steps to set up the MinIO client environment.
+
+To build and run the Docker container for the `minio_client` module, use the following commands:
+```bash
+docker build -t minio_client .
+docker run minio_client
+```
 
 ## 8. Reproducitibility
+
+To run the House Price Predictor project, follow these steps:
+
+1. **Create an Environment File**:
+   Copy the sample environment file to create your own `.env` file.
+   ```bash
+   cp sample.env .env
+   ```
+
+2. **Modify Your .env File**:
+   Open the `.env` file and modify the environment variables according to your configuration. Ensure that you set values for `MINIO_ACCESS_KEY`, `MINIO_SECRET_KEY`, `JUPYTER_TOKEN`, and other necessary variables.
+
+3. **Start the Docker Containers**:
+   Use `docker-compose` to bring up the services defined in the `docker-compose.yaml` file. This will start all the required containers in detached mode.
+   ```bash
+   docker-compose --env-file .env up -d
+   ```
 
 
 ___________________
