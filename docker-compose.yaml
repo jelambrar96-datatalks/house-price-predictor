@@ -1,0 +1,134 @@
+services:
+
+  minio:
+    image: minio/minio@sha256:d051d800a3025588f37f69f132bb5ef718547a9a4ee95ddee44e04ad952a0a96
+    container_name: minio
+    command: server /data --console-address ':9001' --address ':9000'
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ACCESS_KEY: $MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+    restart: always
+    volumes:
+      - minio_data:/data
+
+
+  minio-bucket-creator:
+    image: minio/mc
+    container_name: minio-bucket-creator
+    entrypoint: sh
+    command: >
+      mc config host add minio http://minio:9000 
+      $MINIO_ACCESS_KEY $MINIO_SECRET_KEY 
+      && mc mb minio/mlflow-artifacts
+    depends_on:
+      - minio
+
+  python-bucket-creator:
+    build: minio_client
+    environment:
+      AWS_ACCESS_KEY: $MINIO_ACCESS_KEY
+      AWS_SECRET_KEY: $MINIO_SECRET_KEY
+      MINIO_SERVER: "http://minio:9000"
+      BUCKET_NAME: "mlflow-artifacts"
+    depends_on:
+      - minio
+
+
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow_pass
+      - POSTGRES_DB=mlflow
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+
+
+  mlflow:
+    build:
+      context: ./mlflow
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5000
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=postgresql://mlflow:mlflow_pass@postgres:5432/mlflow
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - MLFLOW_S3_IGNORE_TLS=true
+      - MLFLOW_BUCKET_NAME=mlflow-artifacts
+      - POSTGRES_DB=mlflow
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow_pass
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=s3://mlflow-artifacts/
+      - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
+      - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - AWS_ENDPOINT_URL=http://minio:9000
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri ${MLFLOW_BACKEND_STORE_URI}
+      --no-serve-artifacts
+      --artifacts-destination s3://{MLFLOW_BUCKET_NAME}/artifacts
+    depends_on:
+      - postgres
+      - minio
+
+  train:
+    build:
+      context: train
+      dockerfile: Dockerfile
+    image: train
+    container_name: train
+    ports:
+      - 8888:8888
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      - JUPYTER_TOKEN=$JUPYTER_TOKEN
+      - MLFLOW_TRACKING_URI="postgresql://mlflow:mlflow_pass@postgres:5432/mlflow"
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - MLFLOW_S3_IGNORE_TLS=true
+      - MLFLOW_BUCKET_NAME=mlflow-artifacts
+      - MLFLOW_SERVER=http://mlflow:5000
+      - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
+      - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - MLFLOW_EXPERIMENT_NAME=mlzoomcamp
+      - FLASK_SERVER=http://flask:8000
+    depends_on:
+      - mlflow
+
+  flask:
+    build:
+      context: flask
+      dockerfile: Dockerfile
+    container_name: flask-mlzoomcamp
+    ports:
+      - 8000:8000
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      - MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      - JUPYTER_TOKEN=$JUPYTER_TOKEN
+      - MLFLOW_TRACKING_URI="postgresql://mlflow:mlflow_pass@postgres:5432/mlflow"
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+      - MLFLOW_S3_IGNORE_TLS=true
+      - MLFLOW_BUCKET_NAME=mlflow-artifacts
+      - MLFLOW_SERVER=http://mlflow:5000
+      - AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
+      - AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
+      - MLFLOW_EXPERIMENT_NAME=mlzoomcamp
+    depends_on:
+      - mlflow
+
+
+
+
+volumes:
+  postgres_data:
+  minio_data:
