@@ -4,7 +4,7 @@ import requests
 FLASK_SERVER = os.getenv("FLASK_SERVER", None); 
 
 if not FLASK_SERVER is None:
-    url = f"{FLASK_SERVER}/reload"
+    url = f"{FLASK_SERVER}/api/reload"
     response = requests.post(url=url)
     print(response.json())
 else:
