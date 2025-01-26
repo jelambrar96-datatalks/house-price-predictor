@@ -53,7 +53,70 @@ To address the problem of predicting house prices effectively, we will follow a 
   - Load the best model from the MLflow registry and use it to generate predictions.  
 - **Containerization**: Use Docker to containerize the Flask application for easy deployment.  
 
+### 2.2. Architecture
+
 ![archiecture](drawio/archecture.drawio.png)
+
+### 2.3. File Structure
+
+$ tree . 
+.
+├── dataset
+│   ├── data_description.txt
+│   ├── sample_submission.csv
+│   ├── test.csv
+│   └── train.csv
+├── docker-compose.yaml
+├── drawio
+│   ├── archecture.drawio
+│   └── archecture.drawio.png
+├── minio_client
+│   ├── create_bucket.py
+│   └── Dockerfile
+├── flask
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── model
+│   │   ├── conda.yaml
+│   │   ├── MLmodel
+│   │   ├── model.pkl
+│   │   ├── python_env.yaml
+│   │   └── requirements.txt
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   ├── run.sh
+│   ├── templates
+│   │   ├── index.html
+│   │   └── result.html
+│   └── test
+│       ├── test_reload.py
+│       └── test_requests.py
+├── mlflow
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── run.sh
+├── mlzoomcamp_evaluation_criteria
+│   └── 3113934462-waffle_k_ltr.css
+├── mlzoomcamp_evaluation_criteria.html
+├── notebooks
+│   ├── eda.ipynb
+│   └── requirements.txt
+├── README.md
+├── sample.env
+└── train
+    ├── docker-compose.yaml
+    ├── Dockerfile
+    ├── get_best_model.ipynb
+    ├── main.py
+    ├── Pipfile
+    ├── Pipfile.lock
+    ├── run.sh
+    ├── sample.env
+    ├── sample.json
+    ├── train.csv
+    ├── train.ipynb
+    ├── train_notebook.ipynb
+    └── train_pipelines_sklearn.ipynb
 
 
 ## 3. Exploratory Data Analysis (EDA)
@@ -174,3 +237,19 @@ The [app.py](flask/app.py) script sets up a Flask web application to serve machi
 
 In summary, this script sets up a Flask web application that serves predictions from a machine learning model. It supports interaction with MLflow for model management and uses MINIO for potential cloud storage integration. 
 
+## 6. Dependences Management
+
+
+
+## 7. Docker and containerization
+
+
+## 8. Reproducitibility
+
+
+___________________
+
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/jelambrar1)
+
+Made with Love ❤️ by [@jelambrar96](https://github.com/jelambrar96)
