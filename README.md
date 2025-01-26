@@ -139,3 +139,38 @@ Each model's best estimator, parameters, and score are determined using the resp
 All training process can be execute using [main.py](train/main.py) file. 
 
 
+## 5. Deployment with `Flask`
+
+The [app.py](flask/app.py) script sets up a Flask web application to serve machine learning predictions. The application exposes API endpoints for making predictions and managing the model, and it provides a web interface for user interaction. Here's a breakdown of its components and functionality:
+
+1. **Imports and Libraries**: The script imports various libraries needed for the application, including Flask for the web server, boto3 for AWS interactions, numpy and pandas for data handling, sklearn for machine learning, and mlflow for model tracking.
+
+2. **Environment Variables**: It loads configuration settings from environment variables (e.g., AWS credentials, MLflow server details).
+
+3. **Base JSON Structure**: Defines a template JSON (`BASE_JSON`) with default values for various house attributes. This is used to ensure all necessary fields are present when preparing data for the model.
+
+4. **Function `prepare_features`**: This function takes input data and fills in any missing values using the defaults from `BASE_JSON`.
+
+5. **MLflow Experiment Setup**: If an MLflow server is specified, it sets the tracking URI and loads the experiment for tracking model runs.
+
+6. **Function `load_sklearn_model`**: Downloads and loads a scikit-learn model artifact from MLflow and returns the loaded model.
+
+7. **Temporary Directory**: Creates a temporary directory for storing the model locally.
+
+8. **Class `ModelLoader`**: 
+   - Manages loading the machine learning model.
+   - Provides methods to load a model from MLflow or from a local file.
+   - Checks if the model is ready and performs predictions.
+
+9. **Flask Application Setup**: 
+   - Initializes the Flask app.
+   - Defines routes for reloading the model (`/api/reload`), making predictions (`/api/predict`), and rendering the home page (`/` and `/index`).
+
+   - **Endpoint `/api/reload`**: Reloads the model and returns success or failure.
+   - **Endpoint `/api/predict`**: Accepts JSON input, prepares features, and returns predictions.
+   - **Endpoint `/index`**: Renders a web form for user input, handles form submissions, and displays predictions.
+
+10. **Run the Flask App**: Starts the Flask server on `0.0.0.0` at port `8000` in debug mode.
+
+In summary, this script sets up a Flask web application that serves predictions from a machine learning model. It supports interaction with MLflow for model management and uses MINIO for potential cloud storage integration. 
+
