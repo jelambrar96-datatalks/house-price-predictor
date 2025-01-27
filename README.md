@@ -358,6 +358,8 @@ To run the House Price Predictor project, follow these steps:
    docker-compose --env-file .env up -d
    ```
 
+4. **Run the Flask App**:
+   Starts the Flask server with gunicorn on 0.0.0.0 at port 8000.
 
 ___________________
 
